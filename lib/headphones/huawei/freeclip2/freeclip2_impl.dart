@@ -240,18 +240,21 @@ abstract class _Cmd {
 
   // 0x01 0x20 / 0x01 0x1f
   static const getDoubleTap = MbbCommand(1, 32, {1: [], 2: []});
-  static MbbCommand doubleTap(int side, DoubleTap a) =>
-      MbbCommand(1, 31, {side: [a.mbbCode & 0xFF]});
+  static MbbCommand doubleTap(int side, DoubleTap a) => MbbCommand(1, 31, {
+        side: [a.mbbCode & 0xFF]
+      });
 
   // 0x01 0x26 / 0x01 0x25
   static const getTripleTap = MbbCommand(1, 38, {1: [], 2: []});
-  static MbbCommand tripleTap(int side, DoubleTap a) =>
-      MbbCommand(1, 37, {side: [a.mbbCode & 0xFF]});
+  static MbbCommand tripleTap(int side, DoubleTap a) => MbbCommand(1, 37, {
+        side: [a.mbbCode & 0xFF]
+      });
 
   // 0x2b 0x17 / 0x2b 0x16
   static const getLongPress = MbbCommand(43, 23, {1: [], 2: []});
-  static MbbCommand longPress(int side, LongPress a) =>
-      MbbCommand(43, 22, {side: [a.mbbCode & 0xFF]});
+  static MbbCommand longPress(int side, LongPress a) => MbbCommand(43, 22, {
+        side: [a.mbbCode & 0xFF]
+      });
 
   // 0x2b 0x1f / 0x2b 0x1e  (-1 = off, 0 = volume)
   static const getSwipe = MbbCommand(43, 31, {1: [], 2: []});
@@ -262,22 +265,27 @@ abstract class _Cmd {
 
   // 0x2b 0x11 / 0x2b 0x10
   static const getAutoPause = MbbCommand(43, 17, {1: []});
-  static MbbCommand autoPause(bool on) => MbbCommand(43, 16, {1: [on ? 1 : 0]});
+  static MbbCommand autoPause(bool on) => MbbCommand(43, 16, {
+        1: [on ? 1 : 0]
+      });
 
   // 0x2b 0x6c : read with param 2, write with param 1
   static const getLowLatency = MbbCommand(43, 108, {2: []});
-  static MbbCommand lowLatency(bool on) =>
-      MbbCommand(43, 108, {1: [on ? 1 : 0]});
+  static MbbCommand lowLatency(bool on) => MbbCommand(43, 108, {
+        1: [on ? 1 : 0]
+      });
 
   // 0x2b 0xa3 read / 0x2b 0xa2 write
   static const getSoundQuality = MbbCommand(43, 163, {1: []});
-  static MbbCommand soundQuality(SoundQuality q) =>
-      MbbCommand(43, 162, {1: [q == SoundQuality.quality ? 1 : 0]});
+  static MbbCommand soundQuality(SoundQuality q) => MbbCommand(43, 162, {
+        1: [q == SoundQuality.quality ? 1 : 0]
+      });
 
   // 0x2b 0x2f read / 0x2b 0x2e write
   static const getDualConnect = MbbCommand(43, 47, {1: []});
-  static MbbCommand dualConnect(bool on) =>
-      MbbCommand(43, 46, {1: [on ? 1 : 0]});
+  static MbbCommand dualConnect(bool on) => MbbCommand(43, 46, {
+        1: [on ? 1 : 0]
+      });
 
   /// Everything we ask for on connect
   static const allGetters = [

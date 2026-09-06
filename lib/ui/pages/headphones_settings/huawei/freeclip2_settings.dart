@@ -9,7 +9,10 @@ import '../../../common/list_tile_switch.dart';
 typedef _H = HeadphonesSettings<HuaweiFreeClip2Settings>;
 
 /// All FreeClip 2 settings in one place
-List<Widget> freeClip2SettingsWidgets(_H h) => [
+List<Widget> freeClip2SettingsWidgets(
+  HeadphonesSettings<HuaweiFreeClip2Settings> h,
+) =>
+    [
       _Toggle(
         h,
         (l) => (l.autoPause, l.autoPauseDesc),
