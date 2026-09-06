@@ -16,7 +16,7 @@ jobs:
       - name: Parse fvm to set flutter version
         run: echo "flutter_version=$(cat .fvm/fvm_config.json | jq -r .flutterSdkVersion)" >> $GITHUB_ENV
       - name: Cache Flutter
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: /opt/hostedtoolcache/flutter
           key: ${{ runner.OS }}-flutter-install-cache-${{ env.flutter_version }}-${{ env.flutter_channel }}
@@ -30,7 +30,7 @@ jobs:
         # Clean branch name: https://stackoverflow.com/a/58034787
         run: mv ./build/app/outputs/flutter-apk/app-release.apk ./freebuddy-nightly.apk
       - name: Upload apk as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: freebuddy-nightly
           path: ./freebuddy-nightly.apk
