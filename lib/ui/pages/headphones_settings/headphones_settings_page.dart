@@ -6,6 +6,7 @@ import '../../../headphones/huawei/settings.dart';
 import '../../common/headphones_connection_ensuring_overlay.dart';
 import 'huawei/auto_pause_section.dart';
 import 'huawei/double_tap_section.dart';
+import 'huawei/freeclip2_settings.dart';
 import 'huawei/hold_section.dart';
 
 class HeadphonesSettingsPage extends StatelessWidget {
@@ -30,6 +31,9 @@ class HeadphonesSettingsPage extends StatelessWidget {
 // ...
 // but i have no better idea for now :)))))
 List<Widget> widgetsForModel(HeadphonesSettings settings) {
+  if (settings is HeadphonesSettings<HuaweiFreeClip2Settings>) {
+    return freeClip2SettingsWidgets(settings);
+  }
   if (settings is HeadphonesSettings<HuaweiFreeBuds4iSettings>) {
     return [
       AutoPauseSection(settings),

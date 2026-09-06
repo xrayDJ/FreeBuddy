@@ -24,6 +24,8 @@ So I got mad and decided to make my own... and here it is 🌈
 Right now FreeBuddy only supports handful of models, but this is ment to expand in future 🤞 (psst, if you would like to help, head over to [the.lastgimbus.com/freebuddy/dev/](https://the.lastgimbus.com/freebuddy/dev/))
 
 - Huawei FreeBuds 4i
+- Huawei FreeBuds 3i
+- Huawei FreeClip 2
 
 ## Features 🔨
 
