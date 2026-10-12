@@ -7,88 +7,100 @@ import '../../../common/list_tile_radio.dart';
 import '../../../common/list_tile_switch.dart';
 
 typedef _H = HeadphonesSettings<HuaweiFreeClip2Settings>;
+typedef _S = HuaweiFreeClip2Settings;
 
 /// All FreeClip 2 settings in one place
 List<Widget> freeClip2SettingsWidgets(
   HeadphonesSettings<HuaweiFreeClip2Settings> h,
 ) =>
     [
-      _Toggle(
+      _SectionHeader((l) => l.freeClip2SectionGestures),
+      _Gesture(
         h,
-        (l) => (l.autoPause, l.autoPauseDesc),
-        (s) => s.autoPause,
-        (v) => HuaweiFreeClip2Settings(autoPause: v),
+        title: (l) => l.pageHeadphonesSettingsDoubleTap,
+        fallback: GestureAction.tapFallback,
+        read: (s) => (s.doubleTapLeft, s.doubleTapRight, s.doubleTapOptions),
+        write: (l, r) => _S(doubleTapLeft: l, doubleTapRight: r),
+      ),
+      _Gesture(
+        h,
+        title: (l) => l.freeClip2TripleTap,
+        fallback: GestureAction.tapFallback,
+        read: (s) => (s.tripleTapLeft, s.tripleTapRight, s.tripleTapOptions),
+        write: (l, r) => _S(tripleTapLeft: l, tripleTapRight: r),
+      ),
+      _Gesture(
+        h,
+        title: (l) => l.pageHeadphonesSettingsHold,
+        fallback: GestureAction.longPressFallback,
+        read: (s) => (s.longPressLeft, s.longPressRight, s.longPressOptions),
+        write: (l, r) => _S(longPressLeft: l, longPressRight: r),
       ),
       _Toggle(
         h,
         (l) => (l.freeClip2Swipe, l.freeClip2SwipeDesc),
         (s) => s.swipeVolume,
-        (v) => HuaweiFreeClip2Settings(swipeVolume: v),
+        (v) => _S(swipeVolume: v),
+      ),
+      _SectionHeader((l) => l.freeClip2SectionSound),
+      _SoundQuality(h),
+      _Toggle(
+        h,
+        (l) => (l.freeClip2LowLatency, l.freeClip2LowLatencyDesc),
+        (s) => s.lowLatency,
+        (v) => _S(lowLatency: v),
+      ),
+      _SectionHeader((l) => l.freeClip2SectionGeneral),
+      _Toggle(
+        h,
+        (l) => (l.autoPause, l.autoPauseDesc),
+        (s) => s.autoPause,
+        (v) => _S(autoPause: v),
       ),
       _Toggle(
         h,
         (l) => (l.freeClip2DualConnect, l.freeClip2DualConnectDesc),
         (s) => s.dualConnect,
-        (v) => HuaweiFreeClip2Settings(dualConnect: v),
-      ),
-      _Toggle(
-        h,
-        (l) => (l.freeClip2LowLatency, l.freeClip2LowLatencyDesc),
-        (s) => s.lowLatency,
-        (v) => HuaweiFreeClip2Settings(lowLatency: v),
-      ),
-      const Divider(indent: 16, endIndent: 16),
-      _SoundQuality(h),
-      const Divider(indent: 16, endIndent: 16),
-      _Gesture<DoubleTap>(
-        h,
-        (l) => l.pageHeadphonesSettingsDoubleTap,
-        DoubleTap.values,
-        _tapLabel,
-        (s) => (s.doubleTapLeft, s.doubleTapRight),
-        (l, r) => HuaweiFreeClip2Settings(doubleTapLeft: l, doubleTapRight: r),
-      ),
-      const Divider(indent: 16, endIndent: 16),
-      _Gesture<DoubleTap>(
-        h,
-        (l) => l.freeClip2TripleTap,
-        DoubleTap.values,
-        _tapLabel,
-        (s) => (s.tripleTapLeft, s.tripleTapRight),
-        (l, r) => HuaweiFreeClip2Settings(tripleTapLeft: l, tripleTapRight: r),
-      ),
-      const Divider(indent: 16, endIndent: 16),
-      _Gesture<LongPress>(
-        h,
-        (l) => l.pageHeadphonesSettingsHold,
-        LongPress.values,
-        _longLabel,
-        (s) => (s.longPressLeft, s.longPressRight),
-        (l, r) => HuaweiFreeClip2Settings(longPressLeft: l, longPressRight: r),
+        (v) => _S(dualConnect: v),
       ),
       const SizedBox(height: 64),
     ];
 
-String _tapLabel(AppLocalizations l, DoubleTap t) => switch (t) {
-      DoubleTap.nothing => l.pageHeadphonesSettingsDoubleTapNone,
-      DoubleTap.voiceAssistant => l.pageHeadphonesSettingsDoubleTapAssist,
-      DoubleTap.playPause => l.pageHeadphonesSettingsDoubleTapPlayPause,
-      DoubleTap.next => l.pageHeadphonesSettingsDoubleTapNextSong,
-      DoubleTap.previous => l.pageHeadphonesSettingsDoubleTapPrevSong,
+/// Human name of a [GestureAction] code
+String gestureActionLabel(AppLocalizations l, int code) => switch (code) {
+      GestureAction.off => l.pageHeadphonesSettingsDoubleTapNone,
+      GestureAction.voiceAssistant => l.pageHeadphonesSettingsDoubleTapAssist,
+      GestureAction.playPause => l.pageHeadphonesSettingsDoubleTapPlayPause,
+      GestureAction.next => l.pageHeadphonesSettingsDoubleTapNextSong,
+      GestureAction.previous => l.pageHeadphonesSettingsDoubleTapPrevSong,
+      GestureAction.volumeUp => l.freeClip2VolumeUp,
+      GestureAction.volumeDown => l.freeClip2VolumeDown,
+      _ => l.gestureActionUnknown(code),
     };
 
-String _longLabel(AppLocalizations l, LongPress t) => switch (t) {
-      LongPress.nothing => l.pageHeadphonesSettingsDoubleTapNone,
-      LongPress.voiceAssistant => l.pageHeadphonesSettingsDoubleTapAssist,
-      LongPress.volumeUp => l.freeClip2VolumeUp,
-      LongPress.volumeDown => l.freeClip2VolumeDown,
-    };
+class _SectionHeader extends StatelessWidget {
+  final String Function(AppLocalizations) text;
+
+  const _SectionHeader(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 4),
+      child: Text(
+        text(AppLocalizations.of(context)!),
+        style: t.textTheme.titleSmall!.copyWith(color: t.colorScheme.primary),
+      ),
+    );
+  }
+}
 
 class _Toggle extends StatelessWidget {
   final _H h;
   final (String, String) Function(AppLocalizations) texts;
-  final bool? Function(HuaweiFreeClip2Settings) read;
-  final HuaweiFreeClip2Settings Function(bool) write;
+  final bool? Function(_S) read;
+  final _S Function(bool) write;
 
   const _Toggle(this.h, this.texts, this.read, this.write);
 
@@ -97,12 +109,12 @@ class _Toggle extends StatelessWidget {
     final (title, subtitle) = texts(AppLocalizations.of(context)!);
     return StreamBuilder<bool?>(
       stream: h.settings.map(read),
-      initialData: false,
       builder: (_, snap) => ListTileSwitch(
         title: Text(title),
         subtitle: Text(subtitle),
         value: snap.data ?? false,
-        onChanged: (v) => h.setSettings(write(v)),
+        // disabled until the device tells us the real value
+        onChanged: snap.data == null ? null : (v) => h.setSettings(write(v)),
       ),
     );
   }
@@ -118,90 +130,102 @@ class _SoundQuality extends StatelessWidget {
     final l = AppLocalizations.of(context)!;
     return StreamBuilder<SoundQuality?>(
       stream: h.settings.map((s) => s.soundQuality),
-      builder: (_, snap) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ListTile(
-            title: Text(l.freeClip2SoundQuality),
-            subtitle: Text(l.freeClip2SoundQualityDesc),
-          ),
-          ListTileRadio<SoundQuality>(
-            dense: true,
-            title: Text(l.freeClip2SoundQualityConnectivity),
-            value: SoundQuality.connectivity,
-            groupValue: snap.data,
-            onChanged: (v) =>
-                h.setSettings(HuaweiFreeClip2Settings(soundQuality: v)),
-          ),
-          ListTileRadio<SoundQuality>(
-            dense: true,
-            title: Text(l.freeClip2SoundQualityQuality),
-            value: SoundQuality.quality,
-            groupValue: snap.data,
-            onChanged: (v) =>
-                h.setSettings(HuaweiFreeClip2Settings(soundQuality: v)),
-          ),
-        ],
-      ),
+      builder: (_, snap) {
+        final known = snap.data != null;
+        void set(SoundQuality v) => h.setSettings(_S(soundQuality: v));
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ListTile(
+              title: Text(l.freeClip2SoundQuality),
+              subtitle: Text(l.freeClip2SoundQualityDesc),
+            ),
+            for (final (value, label) in [
+              (SoundQuality.connectivity, l.freeClip2SoundQualityConnectivity),
+              (SoundQuality.quality, l.freeClip2SoundQualityQuality),
+            ])
+              ListTileRadio<SoundQuality>(
+                dense: true,
+                title: Text(label),
+                value: value,
+                groupValue: snap.data,
+                onChanged: known ? set : null,
+              ),
+          ],
+        );
+      },
     );
   }
 }
 
-/// A "left bud / right bud" pair of radio lists for one gesture
-class _Gesture<T> extends StatelessWidget {
+/// One gesture: a radio list per clip, or a single one if the device keeps
+/// one setting for both clips (it then reports only the left value)
+class _Gesture extends StatelessWidget {
   final _H h;
   final String Function(AppLocalizations) title;
-  final List<T> options;
-  final String Function(AppLocalizations, T) label;
-  final (T?, T?) Function(HuaweiFreeClip2Settings) read;
-  final HuaweiFreeClip2Settings Function(T?, T?) write;
+  final List<int> fallback;
+  final (int?, int?, List<int>?) Function(_S) read;
+  final _S Function(int? left, int? right) write;
 
   const _Gesture(
-    this.h,
-    this.title,
-    this.options,
-    this.label,
-    this.read,
-    this.write,
-  );
+    this.h, {
+    required this.title,
+    required this.fallback,
+    required this.read,
+    required this.write,
+  });
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final tt = Theme.of(context).textTheme;
-    return StreamBuilder<(T?, T?)>(
+    return StreamBuilder<(int?, int?, List<int>?)>(
       stream: h.settings.map(read),
       builder: (_, snap) {
-        final left = snap.data?.$1;
-        final right = snap.data?.$2;
+        final (left, right, deviceOptions) = snap.data ?? (null, null, null);
+        // trust the device about what it accepts; keep the current value
+        // visible even if it's something we don't know
+        final allowed = deviceOptions ?? fallback;
+        final options = [
+          ...allowed,
+          for (final v in {left, right})
+            if (v != null && !allowed.contains(v)) v,
+        ];
+        final waiting = left == null && right == null;
+        final perSide = right != null;
+
+        Widget side(String sideTitle, int? value, _S Function(int) onPick) =>
+            Expanded(
+              child: _Side(
+                title: sideTitle,
+                options: options,
+                label: (o) => gestureActionLabel(l, o),
+                value: value,
+                onChanged: waiting ? null : (v) => h.setSettings(onPick(v)),
+              ),
+            );
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ListTile(title: Text(title(l), style: tt.titleMedium)),
+            ListTile(
+              title: Text(title(l), style: tt.titleMedium),
+              subtitle: waiting ? Text(l.freeClip2Waiting) : null,
+            ),
             Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: _Side<T>(
-                      title: l.pageHeadphonesSettingsLeftBud,
-                      options: options,
-                      label: (o) => label(l, o),
-                      value: left,
-                      onChanged: (v) => h.setSettings(write(v, null)),
-                    ),
-                  ),
-                  Expanded(
-                    child: _Side<T>(
-                      title: l.pageHeadphonesSettingsRightBud,
-                      options: options,
-                      label: (o) => label(l, o),
-                      value: right,
-                      onChanged: (v) => h.setSettings(write(null, v)),
-                    ),
-                  ),
-                ],
+                children: perSide
+                    ? [
+                        side(l.pageHeadphonesSettingsLeftBud, left,
+                            (v) => write(v, null)),
+                        side(l.pageHeadphonesSettingsRightBud, right,
+                            (v) => write(null, v)),
+                      ]
+                    : [
+                        side(l.freeClip2BothBuds, left, (v) => write(v, null)),
+                      ],
               ),
             ),
           ],
@@ -211,12 +235,12 @@ class _Gesture<T> extends StatelessWidget {
   }
 }
 
-class _Side<T> extends StatelessWidget {
+class _Side extends StatelessWidget {
   final String title;
-  final List<T> options;
-  final String Function(T) label;
-  final T? value;
-  final ValueChanged<T> onChanged;
+  final List<int> options;
+  final String Function(int) label;
+  final int? value;
+  final ValueChanged<int>? onChanged;
 
   const _Side({
     required this.title,
@@ -239,7 +263,7 @@ class _Side<T> extends StatelessWidget {
           ),
           const Divider(indent: 32, endIndent: 32),
           for (final o in options)
-            ListTileRadio<T>(
+            ListTileRadio<int>(
               dense: true,
               title: Text(label(o)),
               value: o,

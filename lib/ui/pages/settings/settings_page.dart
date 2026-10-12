@@ -9,20 +9,21 @@ class SettingsPage extends StatelessWidget {
     final l = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(title: Text(l.settings)),
-      body: Center(
-        child: ListView(
-          padding: const EdgeInsets.all(16.0),
-          children: [
-            FilledButton(
-              onPressed: () =>
-                  Navigator.of(context).pushNamed('/settings/about'),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(l.pageAboutTitle),
-              ),
-            )
-          ],
-        ),
+      body: ListView(
+        children: [
+          ListTile(
+            leading: const Icon(Icons.bug_report_outlined),
+            title: Text(l.diagnosticsTitle),
+            subtitle: Text(l.diagnosticsDesc),
+            onTap: () =>
+                Navigator.of(context).pushNamed('/settings/diagnostics'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: Text(l.pageAboutTitle),
+            onTap: () => Navigator.of(context).pushNamed('/settings/about'),
+          ),
+        ],
       ),
     );
   }

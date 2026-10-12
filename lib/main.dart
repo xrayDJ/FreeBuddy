@@ -16,6 +16,7 @@ import 'platform_stuff/android/appwidgets/battery_appwidget.dart';
 import 'platform_stuff/android/background/periodic.dart' as android_periodic;
 import 'ui/app_settings.dart';
 import 'ui/pages/about/about_page.dart';
+import 'ui/pages/diagnostics/diagnostics_page.dart';
 import 'ui/pages/headphones_settings/headphones_settings_page.dart';
 import 'ui/pages/home/home_page.dart';
 import 'ui/pages/introduction/introduction.dart';
@@ -117,6 +118,7 @@ class MyApp extends StatelessWidget {
           '/introduction': (context) => const FreebuddyIntroduction(),
           '/settings': (context) => const SettingsPage(),
           '/settings/about': (context) => const AboutPage(),
+          '/settings/diagnostics': (context) => const DiagnosticsPage(),
           '/settings/about/licenses': (context) => const LicensePage(),
         },
         initialRoute: '/',

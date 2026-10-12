@@ -9,12 +9,11 @@ final class HuaweiFreeClip2Sim extends HuaweiFreeClip2
     with BluetoothHeadphonesSim, LRCBatteryAlwaysFullSim {
   final _settingsCtrl = BehaviorSubject<HuaweiFreeClip2Settings>.seeded(
     const HuaweiFreeClip2Settings(
-      doubleTapLeft: DoubleTap.playPause,
-      doubleTapRight: DoubleTap.playPause,
-      tripleTapLeft: DoubleTap.next,
-      tripleTapRight: DoubleTap.next,
-      longPressLeft: LongPress.voiceAssistant,
-      longPressRight: LongPress.voiceAssistant,
+      doubleTapLeft: GestureAction.playPause,
+      doubleTapRight: GestureAction.playPause,
+      tripleTapLeft: GestureAction.next,
+      tripleTapRight: GestureAction.previous,
+      longPressLeft: GestureAction.voiceAssistant,
       swipeVolume: true,
       autoPause: true,
       lowLatency: false,
