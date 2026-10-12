@@ -1,12 +1,10 @@
 {
   "appTitle": "FreeBuddy",
-  "helloWorld": "Hello World!",
 
   "leftBudShort": "Left",
   "rightBudShort": "Right",
   "caseShort": "Case",
 
-  "pageHomeConnected": "Connected",
   "pageHomeDisconnected": "Headphones not connected 🙅",
   "pageHomeDisconnectedDesc": "Your headphones are not connected to your phone 😨",
   "pageHomeDisconnectedOpenSettings": "Open bluetooth settings to connect them 💙",
@@ -20,7 +18,6 @@
   "pageHomeBluetoothDisabledOpenSettings": "Open settings to enable 💙",
   "pageHomeNotPaired": "You don't have any supported headphones paired to your phone 😿",
   "pageHomeNotPairedPairOpenSettings": "Open bluetooth settings to pair 🔌",
-  "pageHomeNotPairedPairOpenDemo": "Try app without headphones 🌐",
   "pageHomeConnectedClosed": "Headphones are connected, but not with FreeBuddy 🤨",
   "pageHomeConnectedClosedDesc": "You probably opened another app - connect again 👀",
   "pageHomeConnectedClosedConnect": "Connect to headphones",
@@ -29,7 +26,6 @@
 
   "pageHeadphonesSettingsTitle": "Headphones settings 🔧",
   "pageHeadphonesSettingsDoubleTap": "Double tap",
-  "pageHeadphonesSettingsDoubleTapDesc": "Tap a bud twice to:",
   "pageHeadphonesSettingsDoubleTapPlayPause": "Play/Pause",
   "pageHeadphonesSettingsDoubleTapNextSong": "Next song",
   "pageHeadphonesSettingsDoubleTapPrevSong": "Previous song",
@@ -38,7 +34,6 @@
   "pageHeadphonesSettingsLeftBud": "Left bud",
   "pageHeadphonesSettingsRightBud": "Right bud",
   "pageHeadphonesSettingsHold": "Touch and hold",
-  "pageHeadphonesSettingsHoldDesc": "Holding a bud will toggle these ANC modes:",
 
   "freeClip2TripleTap": "Triple tap",
   "freeClip2VolumeUp": "Volume up",
@@ -53,13 +48,6 @@
   "freeClip2SoundQualityDesc": "Prefer a stable connection or better audio quality",
   "freeClip2SoundQualityConnectivity": "Prioritise connection",
   "freeClip2SoundQualityQuality": "Prioritise sound quality",
-
-  "ancNoiseCancel": "Noise cancelling 🔇",
-  "ancNoiseCancelDesc": "Reduces noise around you",
-  "ancOff": "Off 🤷",
-  "ancOffDesc": "Turns ANC off",
-  "ancAwareness": "Awareness 🔊",
-  "ancAwarenessDesc": "Allows you to hear your surroundings",
 
   "settings": "Settings",
   "privacyPolicy": "Privacy policy",
@@ -80,7 +68,7 @@
   "pageAboutOpenSourceLicensesBtn": "Open source licenses",
   "pageIntroTitle": "Welcome to FreeBuddy 👋",
   "pageIntroWhatIsThis": "FreeBuddy is open source app for your headphones 🎧",
-  "pageIntroSupported": "Currently supported are:\n - Huawei FreeBuds 4i\n - Huawei FreeBuds 3i\n - Huawei FreeClip 2",
+  "pageIntroSupported": "Made for HUAWEI FreeClip 2 🧷",
   "pageIntroShortPrivacyPolicy": "This app doesn't collect any emails, identifiers, or any personal data 🎉 You can read more about it here: ",
   "pageIntroAnyQuestions": "If you have any questions, feel free to contact me 💌 Look at \"Settings->About\" for my socials!",
   "pageIntroQuit": "Okay 👍"

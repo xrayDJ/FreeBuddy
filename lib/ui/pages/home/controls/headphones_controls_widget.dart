@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../../../headphones/framework/anc.dart';
 import '../../../../headphones/framework/bluetooth_headphones.dart';
 import '../../../../headphones/framework/headphones_info.dart';
 import '../../../../headphones/framework/headphones_settings.dart';
 import '../../../../headphones/framework/lrc_battery.dart';
 import '../../../theme/layouts.dart';
-import 'anc_card.dart';
 import 'battery_card.dart';
 import 'headphones_image.dart';
 
 /// Main whole-screen widget with controls for headphones
 ///
-/// It contains battery, anc buttons, button to settings etc - just give it
+/// It contains battery, button to settings etc - just give it
 /// the [headphones] and all done ☺
 ///
 /// ...in fact, it is built so simple that you can freely hot-swap the
@@ -58,7 +56,6 @@ class HeadphonesControlsWidget extends StatelessWidget {
                   ),
                 if (headphones is LRCBattery)
                   BatteryCard(headphones as LRCBattery),
-                if (headphones is Anc) AncCard(headphones as Anc),
               ],
             )
           : Row(
@@ -94,7 +91,6 @@ class HeadphonesControlsWidget extends StatelessWidget {
                           ),
                         if (headphones is LRCBattery)
                           BatteryCard(headphones as LRCBattery),
-                        if (headphones is Anc) AncCard(headphones as Anc),
                       ],
                     ),
                   ),

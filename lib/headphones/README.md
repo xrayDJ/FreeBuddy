@@ -12,7 +12,7 @@ Here's a quick roadmap of how headphones get connected:
 2. TODO: Proper function/switch-case-loop watches over connected devices, distinguishes which ones are headphones that we support, then creates their object by passing them their bluetoothDevice + serial/BLE objects
 
    Note that this step already manages their serial connection - headphone classes assume they are connected
-3. Given headphone class listens to all serial data, parses it and exposes all recognized info though it's streams. Almost every value - battery, name, anc state - has it's own `Stream`, and UI can be split to re-usable `StreamBuilder`s
+3. Given headphone class listens to all serial data, parses it and exposes all recognized info though it's streams. Almost every value - battery, name, gestures - has it's own `Stream`, and UI can be split to re-usable `StreamBuilder`s
 4. When headphones get disconnected, function from step 2. closes the `StreamChannel` passed to HeadphoneClass, HpClass closes all it's streams and gets forgotten 💀
 
 # `framework/`
@@ -43,10 +43,14 @@ So, I want to be careful with this, but for now adding their model and vendor na
 Folders named by vendor - `huawei/`, `samsung/` etc contain headphones base classes, their implementations and simulators
 
 ## Base classes
-Most basically named classes - f.e. `freebuds4i.dart` contain "blueprints/specifiactions" for headphones - have a look:
+Most basically named classes - f.e. `freeclip2.dart` contain "blueprints/specifiactions" for headphones - have a look:
 ```dart
-abstract base class HuaweiFreeBuds4i
-    implements BluetoothHeadphones, HeadphonesModelInfo, LRCBattery, Anc {...}
+abstract base class HuaweiFreeClip2
+    implements
+        BluetoothHeadphones,
+        HeadphonesModelInfo,
+        LRCBattery,
+        HeadphonesSettings<HuaweiFreeClip2Settings> {...}
 ```
 
 We clearly see what features this model has - we use this class across UI, not caring how they are implemented
@@ -54,15 +58,14 @@ We clearly see what features this model has - we use this class across UI, not c
 ### Discoverability stuff in base classes
 I don't have a better idea for where to put identifiers - that is, name regexes, bluetooth uuids etc (stuff that distinguishes given model from other bluetooth devices)
 
-...so I'm putting it in static fields plainly in base classes 🤷 and later some big-ass switch will be like:
+...so I'm putting it in static fields plainly in base classes 🤷 and `model_matching.dart` uses them:
 
 ```dart
-// example pseudocode
-switch(device.btName) {
-  case HuaweiFreeBuds4i.btName:
-    return HuaweiFreeBuds4iImpl(device.rfComm);
-  // ... etc
-}
+if (!HuaweiFreeClip2.idNameRegex.hasMatch(name)) return null;
+return (
+  builder: (io, dev) => HuaweiFreeClip2Impl(mbbChannel(io), dev),
+  placeholder: const HuaweiFreeClip2SimPlaceholder(),
+);
 ```
 
 ## Implementation classes

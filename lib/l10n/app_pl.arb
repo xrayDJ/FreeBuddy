@@ -1,12 +1,10 @@
 {
   "appTitle": "FreeBuddy",
-  "helloWorld": "Witaj świecie!",
 
   "leftBudShort": "Lewa",
   "rightBudShort": "Prawa",
   "caseShort": "Etui",
 
-  "pageHomeConnected": "Połączone",
   "pageHomeDisconnected": "Słuchawki nie połączone 🙅",
   "pageHomeDisconnectedDesc": "Twoje słuchawki nie są połączone z telefonem 😨",
   "pageHomeDisconnectedOpenSettings": "Otwórz ustawienia bluetooth żeby połączyć 💙",
@@ -20,7 +18,6 @@
   "pageHomeBluetoothDisabledOpenSettings": "Otwórz ustawienia żeby włączyć 💙",
   "pageHomeNotPaired": "Nie masz żadnych wspieranych słuchawek sparowanych z telefonem 😿",
   "pageHomeNotPairedPairOpenSettings": "Otwórz ustawienia bluetooth żeby sparować 🔌",
-  "pageHomeNotPairedPairOpenDemo": "Wypróbuj apke bez słuchawek 🌐",
   "pageHomeConnectedClosed": "Słuchawki są połączone, ale nie z FreeBuddy 🤨",
   "pageHomeConnectedClosedDesc": "Pewnie otworzyłeś inną apke - połącz spowrotem 👀",
   "pageHomeConnectedClosedConnect": "Połącz ze słuchawkami",
@@ -29,7 +26,6 @@
 
   "pageHeadphonesSettingsTitle": "Ustawienia słuchawek 🔧",
   "pageHeadphonesSettingsDoubleTap": "Dwukrotny tap",
-  "pageHeadphonesSettingsDoubleTapDesc": "Tapnięcie dwa razy w słuchawkę spowoduje::",
   "pageHeadphonesSettingsDoubleTapPlayPause": "Start/pauza",
   "pageHeadphonesSettingsDoubleTapNextSong": "Następny utwór",
   "pageHeadphonesSettingsDoubleTapPrevSong": "Poprzedni utwór",
@@ -38,7 +34,6 @@
   "pageHeadphonesSettingsLeftBud": "Lewa słuchawka",
   "pageHeadphonesSettingsRightBud": "Prawa słuchawka",
   "pageHeadphonesSettingsHold": "Przytrzymanie",
-  "pageHeadphonesSettingsHoldDesc": "Przytrzymanie słuchawki będzie przełączać te tryby ANC:",
 
   "freeClip2TripleTap": "Potrójne dotknięcie",
   "freeClip2VolumeUp": "Głośniej",
@@ -53,13 +48,6 @@
   "freeClip2SoundQualityDesc": "Priorytet dla stabilnego połączenia lub lepszej jakości dźwięku",
   "freeClip2SoundQualityConnectivity": "Priorytet: połączenie",
   "freeClip2SoundQualityQuality": "Priorytet: jakość dźwięku",
-
-  "ancNoiseCancel": "Redukcja hałasu 🔇",
-  "ancNoiseCancelDesc": "Wygłusza hałas dookoła Ciebie",
-  "ancOff": "Wyłączona 🤷",
-  "ancOffDesc": "Wyłącza ANC",
-  "ancAwareness": "Przepuszczanie 🔊",
-  "ancAwarenessDesc": "Pozwala ci słyszeć twoje otoczenie",
 
   "settings": "Ustawienia",
   "privacyPolicy": "Polityka prywatności",
@@ -80,7 +68,7 @@
   "pageAboutOpenSourceLicensesBtn": "Licencje open source",
   "pageIntroTitle": "Witaj we FreeBuddy 👋",
   "pageIntroWhatIsThis": "FreeBuddy to open-source aplikacja do twoich słuchaweczek 🎧",
-  "pageIntroSupported": "Obecnie wspierane są:\n - Huawei FreeBuds 4i\n - Huawei FreeBuds 3i\n - Huawei FreeClip 2",
+  "pageIntroSupported": "Stworzona dla HUAWEI FreeClip 2 🧷",
   "pageIntroShortPrivacyPolicy": "Ta aplikacja nie zbiera żadnych maili, identyfikatorów, czy innych osobistych danych 🎉 Możesz o tym poczytać tutaj: ",
   "pageIntroAnyQuestions": "Jeśli masz jakiekolwiek pytania, napisz do mnie śmiało 💌 Wejdź w \"Ustawienia->O aplikacji\" po moje socjale!",
   "pageIntroQuit": "Oki doki 👍"

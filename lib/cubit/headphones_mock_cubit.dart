@@ -2,18 +2,17 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../headphones/huawei/freebuds4i/freebuds4i_sim.dart';
+import '../headphones/huawei/freeclip2/freeclip2_sim.dart';
 import 'headphones_connection_cubit.dart';
 import 'headphones_cubit_objects.dart';
 
 class HeadphonesMockCubit extends Cubit<HeadphonesConnectionState>
     implements HeadphonesConnectionCubit {
   HeadphonesMockCubit()
-      : super(const HeadphonesDisconnected(HuaweiFreeBuds4iSimPlaceholder())) {
+      : super(const HeadphonesDisconnected(HuaweiFreeClip2SimPlaceholder())) {
     // i do this because otherwise initial data isn't even emitted and
     // [BlocListener]s don't work >:(
-    Future.microtask(
-        () => emit(HeadphonesConnectedOpen(HuaweiFreeBuds4iSim())));
+    Future.microtask(() => emit(HeadphonesConnectedOpen(HuaweiFreeClip2Sim())));
   }
 
   @override
