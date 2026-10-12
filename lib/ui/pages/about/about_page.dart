@@ -1,22 +1,15 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../../version.dart';
+
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
 
-  // I wanted to add "copy on long press" here, but recognizer can detect only
-  // one :sob:
-  TextSpan _link(String text, [String? url]) {
-    return TextSpan(
-      text: text,
-      style: const TextStyle(color: Colors.blue),
-      recognizer: TapGestureRecognizer()
-        ..onTap = () =>
-            launchUrlString(url ?? text, mode: LaunchMode.externalApplication),
-    );
-  }
+  static const _forkUrl = 'https://github.com/xrayDJ/FreeBuddy';
+  static const _freeBuddyUrl = 'https://github.com/TheLastGimbus/FreeBuddy';
+  static const _openFreebudsUrl = 'https://github.com/melianmiko/OpenFreebuds';
 
   @override
   Widget build(BuildContext context) {
@@ -24,104 +17,72 @@ class AboutPage extends StatelessWidget {
     final t = Theme.of(context);
     final tt = t.textTheme;
 
-    smallSpace() => const SizedBox(height: 6.0);
+    Widget link(IconData icon, String title, String url, {String? subtitle}) =>
+        ListTile(
+          leading: Icon(icon),
+          title: Text(title),
+          subtitle: Text(subtitle ?? url),
+          trailing: const Icon(Icons.open_in_new, size: 18),
+          onTap: () =>
+              launchUrlString(url, mode: LaunchMode.externalApplication),
+        );
 
-    newline() => const TextSpan(text: "\n");
-
-    Widget divider() => Column(
-          children: [
-            const SizedBox(height: 6.0),
-            Container(
-              height: 1.0,
-              color: t.dividerColor,
-              margin: const EdgeInsets.symmetric(vertical: 16.0),
-            ),
-            const SizedBox(height: 6.0),
-          ],
+    Widget header(String text) => Padding(
+          padding: const EdgeInsets.fromLTRB(16, 24, 16, 4),
+          child: Text(
+            text,
+            style: tt.titleSmall!.copyWith(color: t.colorScheme.primary),
+          ),
         );
 
     return Scaffold(
       appBar: AppBar(title: Text(l.pageAboutTitle)),
-      body: Center(
-        child: ListView(
-          padding: const EdgeInsets.all(16.0),
-          children: [
-            Center(child: Text(l.pageAboutMeHeader, style: tt.headlineLarge)),
-            smallSpace(),
-            Text(l.pageAboutMeBio),
-            smallSpace(),
-            Text(l.pageAboutMeAnyQuestions),
-            smallSpace(),
-            Text.rich(
-              TextSpan(
-                children: [
-                  const TextSpan(text: "Discord 🎮: "),
-                  _link("FreeBuddy server", "https://discord.gg/fYS98UE5Cu"),
-                  newline(),
-                  const TextSpan(text: "Email 📧: "),
-                  _link("4i05wllh@anonaddy.me", "mailto:4i05wllh@anonaddy.me"),
-                ],
-                style: tt.bodyLarge,
-              ),
+      body: ListView(
+        children: [
+          const SizedBox(height: 16),
+          Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: Image.asset('assets/app_icons/ic_launcher.png', width: 96),
             ),
-            smallSpace(),
-            Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(text: l.pageAboutMeOpenSource),
-                  newline(),
-                  _link("https://github.com/TheLastGimbus/FreeBuddy/"),
-                  // TODO: Actually write a blog
-                  // newline(),
-                  // TextSpan(text: l.pageAboutMeBlog),
-                  // _link("https://the.lastgimbus.com/blog/"),
-                ],
-              ),
+          ),
+          const SizedBox(height: 12),
+          Center(child: Text(l.appTitle, style: tt.headlineMedium)),
+          Center(
+            child: Text(
+              l.pageAboutVersion(appVersion),
+              style: tt.bodyMedium!
+                  .copyWith(color: t.colorScheme.onSurfaceVariant),
             ),
-            divider(),
-            Text(l.pageAboutMentionsHeader, style: tt.headlineMedium),
-            smallSpace(),
-            Text(l.pageAboutMentionsPeopleHeader, style: tt.headlineSmall),
-            Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(text: " - ${l.pageAboutMentionsPeopleStreet}"),
-                  newline(),
-                  TextSpan(text: " - ${l.pageAboutMentionsPeopleHuawei}"),
-                ],
-              ),
-            ),
-            smallSpace(),
-            Text(l.pageAboutMentionsTechHeader, style: tt.headlineSmall),
-            Text.rich(
-              TextSpan(
-                children: [
-                  const TextSpan(text: " - Flutter 🐦"),
-                  newline(),
-                  const TextSpan(text: " - Wireshark 🦈"),
-                ],
-              ),
-            ),
-            divider(),
-            Text(l.privacyPolicyTitle, style: t.textTheme.headlineSmall),
-            smallSpace(),
-            Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(text: l.privacyPolicyText),
-                  newline(),
-                  _link(l.privacyPolicyUrl),
-                ],
-              ),
-            ),
-            divider(),
-            TextButton(
-              onPressed: () =>
-                  Navigator.of(context).pushNamed('/settings/about/licenses'),
-              child: Text(l.pageAboutOpenSourceLicensesBtn),
-            ),
-          ],
-        ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(l.pageAboutIntro, textAlign: TextAlign.center),
+          ),
+          link(Icons.code, l.pageAboutSource, _forkUrl),
+          header(l.pageAboutCredits),
+          link(Icons.headphones_outlined, 'FreeBuddy', _freeBuddyUrl,
+              subtitle: l.pageAboutCreditsFreeBuddy),
+          link(Icons.cable, 'OpenFreebuds', _openFreebudsUrl,
+              subtitle: l.pageAboutCreditsOpenFreebuds),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(l.pageAboutLicense, style: tt.bodySmall),
+          ),
+          header(l.privacyPolicyTitle),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(l.privacyPolicyText),
+          ),
+          const SizedBox(height: 16),
+          ListTile(
+            leading: const Icon(Icons.gavel_outlined),
+            title: Text(l.pageAboutOpenSourceLicensesBtn),
+            onTap: () =>
+                Navigator.of(context).pushNamed('/settings/about/licenses'),
+          ),
+          const SizedBox(height: 32),
+        ],
       ),
     );
   }

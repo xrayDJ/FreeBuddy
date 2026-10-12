@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">FreeClip Buddy</string>
+    <string name="widget_clips">Clips</string>
+    <string name="widget_left">Left</string>
+    <string name="widget_right">Right</string>
+    <string name="widget_case">Case</string>
+</resources>

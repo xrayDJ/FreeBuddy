@@ -1,4 +1,4 @@
-package com.lastgimbus.the.freebuddy
+package com.xraydj.freeclipbuddy
 
 import HomeWidgetGlanceState
 import HomeWidgetGlanceStateDefinition
@@ -132,25 +132,25 @@ class BatteryWidget : GlanceAppWidget() {
                         // this must be passed  here because for some reason the .defaultWeight() is context aware??
                         val mod = GlanceModifier.defaultWeight().fillMaxHeight()
                         if (size.width <= SMALL_SQUARE.width) {
-                            BatteryBox(mod, ImageProvider(R.drawable.earbuds), max(left, right), "Buds")
+                            BatteryBox(mod, ImageProvider(R.drawable.earbuds), max(left, right), context.getString(R.string.widget_clips))
                         } else {
                             val avail = (size.width / 3) - (8.dp * 2)
-                            BatteryBox(mod, ImageProvider(R.drawable.left_earbud), left, "Left", avail)
+                            BatteryBox(mod, ImageProvider(R.drawable.left_earbud), left, context.getString(R.string.widget_left), avail)
                             Spacer(modifier = GlanceModifier.size(R.dimen.batteryWidgetSquaresSpacerSize))
-                            BatteryBox(mod, ImageProvider(R.drawable.right_earbud), right, "Right", avail)
+                            BatteryBox(mod, ImageProvider(R.drawable.right_earbud), right, context.getString(R.string.widget_right), avail)
                             Spacer(modifier = GlanceModifier.size(R.dimen.batteryWidgetSquaresSpacerSize))
-                            BatteryBox(mod, ImageProvider(R.drawable.earbuds_case), case, "Case", avail)
+                            BatteryBox(mod, ImageProvider(R.drawable.earbuds_case), case, context.getString(R.string.widget_case), avail)
                         }
                     }
                 } else {
                     Column(modifier = GlanceModifier.fillMaxSize()) {
                         // this must be passed  here because for some reason the .defaultWeight() is context aware??
                         val mod = GlanceModifier.defaultWeight() // no .fillMaxHeight()!
-                        BatteryBox(mod, ImageProvider(R.drawable.left_earbud), left, "Left")
+                        BatteryBox(mod, ImageProvider(R.drawable.left_earbud), left, context.getString(R.string.widget_left))
                         Spacer(modifier = GlanceModifier.size(R.dimen.batteryWidgetLinesSpacerSize))
-                        BatteryBox(mod, ImageProvider(R.drawable.right_earbud), right, "Right")
+                        BatteryBox(mod, ImageProvider(R.drawable.right_earbud), right, context.getString(R.string.widget_right))
                         Spacer(modifier = GlanceModifier.size(R.dimen.batteryWidgetLinesSpacerSize))
-                        BatteryBox(mod, ImageProvider(R.drawable.earbuds_case), case, "Case")
+                        BatteryBox(mod, ImageProvider(R.drawable.earbuds_case), case, context.getString(R.string.widget_case))
                     }
                 }
             }

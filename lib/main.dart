@@ -22,6 +22,7 @@ import 'ui/pages/home/home_page.dart';
 import 'ui/pages/introduction/introduction.dart';
 import 'ui/pages/settings/settings_page.dart';
 import 'ui/theme/themes.dart';
+import 'version.dart';
 
 void main() {
   final bind = WidgetsFlutterBinding.ensureInitialized();
@@ -119,7 +120,10 @@ class MyApp extends StatelessWidget {
           '/settings': (context) => const SettingsPage(),
           '/settings/about': (context) => const AboutPage(),
           '/settings/diagnostics': (context) => const DiagnosticsPage(),
-          '/settings/about/licenses': (context) => const LicensePage(),
+          '/settings/about/licenses': (context) => const LicensePage(
+                applicationName: 'FreeClip Buddy',
+                applicationVersion: appVersion,
+              ),
         },
         initialRoute: '/',
       ),

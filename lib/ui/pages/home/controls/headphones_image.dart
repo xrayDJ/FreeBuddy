@@ -18,7 +18,7 @@ class HeadphonesImage extends StatelessWidget {
               ? Image.asset(
                   snap.data!,
                   fit: BoxFit.contain,
-                  filterQuality: FilterQuality.none,
+                  filterQuality: FilterQuality.medium,
                 )
               : const SizedBox(),
         ),

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_clips">Clip</string>
+    <string name="widget_left">Sinistra</string>
+    <string name="widget_right">Destra</string>
+    <string name="widget_case">Custodia</string>
+</resources>

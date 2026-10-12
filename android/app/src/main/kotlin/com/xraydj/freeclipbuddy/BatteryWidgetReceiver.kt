@@ -1,4 +1,4 @@
-package com.lastgimbus.the.freebuddy
+package com.xraydj.freeclipbuddy
 
 import HomeWidgetGlanceWidgetReceiver
 

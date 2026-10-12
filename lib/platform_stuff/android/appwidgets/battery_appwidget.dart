@@ -38,6 +38,6 @@ Future<void> updateBatteryHomeWidget(LRCBatteryLevels batteryData) async {
   await HomeWidget.updateWidget(
     name: 'BatteryWidgetReceiver',
     androidName: 'BatteryWidgetReceiver',
-    qualifiedAndroidName: 'com.lastgimbus.the.freebuddy.BatteryWidgetReceiver',
+    qualifiedAndroidName: 'com.xraydj.freeclipbuddy.BatteryWidgetReceiver',
   );
 }
