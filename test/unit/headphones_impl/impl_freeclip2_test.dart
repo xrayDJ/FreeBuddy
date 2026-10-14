@@ -23,6 +23,36 @@ const _readDeviceInfo = [
 const _readTripleTap = [90, 0, 7, 0, 1, 38, 1, 0, 2, 0, 37, 18];
 const _writeTripleTapLeftNext = [90, 0, 6, 0, 1, 37, 1, 1, 2, 71, 131];
 
+/// Real replies from Leo's FreeClip 2 (BTFT0027, HarmonyOS 6.1.0.352),
+/// copied from the diagnostics page log
+const _realLog = [
+  // 01:07 device info - note param ids 32..34, above what we asked for
+  '5a00bb00010702020167030e484c3153414b4d325f5665722e4107204861726d6f6e794f'
+      '5320362e312e302e333532284630303348303033433930290910354650545132363730'
+      '383030363333340a0f42544654303032372d3030303136370f08425446543030323718'
+      '254c2d545130373134323636463033323739392c522d5451303731343236354c303436'
+      '3039361901021b06d3013479e5c01d06e66aab2f01001e067eaabe3301002006df570c'
+      '79e5c022064c4e2c79e5c02101019cc7',
+  // 01:08 battery
+  '5a001b000108010164020364644303030000000402140a0502000006010ac44e',
+  // 01:20 double tap
+  '5a001a000120010101020101030501020700ff040100050100060200ffb2dd',
+  // 01:26 triple tap
+  '5a001100012601010702010203060204050607ff3c38',
+  // 2b:17 long press
+  '5a002b002b170101ff0201ff0310000102030405060708090a0e0f1114ff0401ff0501ff'
+      '060200ff0901000a0100769f',
+  // 2b:1f swipe
+  '5a000e002b1f01010002010003030001ff24df',
+  // 2b:a3 sound quality
+  '5a0009002ba3010101020101b623',
+];
+
+Uint8List _hex(String h) => Uint8List.fromList([
+      for (var i = 0; i < h.length; i += 2)
+        int.parse(h.substring(i, i + 2), radix: 16),
+    ]);
+
 void main() {
   group("FreeClip 2 implementation tests", () {
     // "info" tests check if impl reacts to data *from* buds
@@ -157,13 +187,75 @@ void main() {
       }).toPayload());
       expect(
         fc2.settings.map((s) => (
-              s.swipeVolume,
+              s.swipeAction,
               s.autoPause,
               s.lowLatency,
               s.soundQuality,
               s.dualConnect,
             )),
-        emitsThrough((false, true, true, SoundQuality.quality, false)),
+        emitsThrough(
+            (GestureAction.off, true, true, SoundQuality.quality, false)),
+      );
+    });
+
+    test("Real device log (one serial read with all replies)", () async {
+      inputCtrl.add(Uint8List.fromList(_realLog.expand(_hex).toList()));
+      await pumpEventQueue();
+      final s = fc2.settings.value;
+      String? j(List<int>? l) => l?.join(','); // lists compare by identity
+      expect(
+        (s.doubleTapLeft, s.doubleTapRight, j(s.doubleTapOptions)),
+        (1, 1, '1,2,7,0,-1'),
+      );
+      expect(
+        (s.doubleTapInCallLeft, s.doubleTapInCallRight),
+        (GestureAction.answerCall, GestureAction.answerCall),
+      );
+      expect(j(s.doubleTapInCallOptions), '0,-1');
+      // triple tap does NOT allow play/pause (1) or assistant (0)
+      expect(
+        (s.tripleTapLeft, s.tripleTapRight, j(s.tripleTapOptions)),
+        (GestureAction.previous, GestureAction.next, '2,4,5,6,7,-1'),
+      );
+      // long press is per clip, both off; no volume codes (18/19) allowed
+      expect(
+        (s.longPressLeft, s.longPressRight, j(s.longPressOptions)),
+        (-1, -1, '0,1,2,3,4,5,6,7,8,9,10,14,15,17,20,-1'),
+      );
+      expect((s.longPressInCallLeft, s.longPressInCallRight), (-1, -1));
+      expect(
+        (s.swipeAction, j(s.swipeOptions)),
+        (GestureAction.swipeVolume, '0,1,-1'),
+      );
+      expect(s.soundQuality, SoundQuality.quality);
+      expect(
+        fc2.lrcBattery.value,
+        const LRCBatteryLevels(100, 100, 67, false, false, false),
+      );
+      expect(fc2.deviceInfo.value, {
+        'Model': 'BTFT0027',
+        'Submodel': 'BTFT0027-000167',
+        'Firmware': 'HarmonyOS 6.1.0.352(F003H003C90)',
+        'Hardware': 'HL1SAKM2_Ver.A',
+        'Serial number': '5FPTQ26708006334',
+      });
+    });
+
+    test("In-call gestures write params 4/5, swipe writes the code", () async {
+      final sent = outputCtrl.stream.bytesToList().take(16).toList();
+      await fc2.setSettings(const HuaweiFreeClip2Settings(
+        doubleTapInCallRight: GestureAction.off,
+        longPressInCallLeft: GestureAction.answerCall,
+        swipeAction: 1,
+      ));
+      // 10 initial reads + 3 writes + 3 re-reads
+      expect(
+        await sent,
+        containsAll([
+          [90, 0, 6, 0, 1, 31, 5, 1, 255, 225, 179],
+          [90, 0, 6, 0, 43, 22, 4, 1, 0, 117, 30],
+          [90, 0, 9, 0, 43, 30, 1, 1, 1, 2, 1, 1, 174, 93],
+        ]),
       );
     });
 
@@ -215,7 +307,7 @@ void main() {
         doubleTapRight: GestureAction.next,
         tripleTapLeft: GestureAction.off,
         longPressLeft: GestureAction.volumeUp,
-        swipeVolume: false,
+        swipeAction: GestureAction.off,
         autoPause: true,
         lowLatency: true,
         soundQuality: SoundQuality.quality,

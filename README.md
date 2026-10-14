@@ -7,8 +7,8 @@ It is a personal fork of [FreeBuddy](https://github.com/TheLastGimbus/FreeBuddy)
 ## Features
 
 - Battery of left clip, right clip and case, plus a home screen widget
-- Double tap and triple tap actions per clip, touch-and-hold action
-- Swipe to change volume, auto pause, dual connection, low latency, sound quality preference
+- Double tap, triple tap and touch-and-hold actions per clip, plus double tap and hold during calls
+- Swipe action, auto pause, dual connection, low latency, sound quality preference
 - Diagnostics page (Settings → Diagnostics): raw Bluetooth traffic, device info and a manual command sender, to figure out what the clips really accept
 - English, Italian and Polish
 
@@ -33,6 +33,8 @@ flutter analyze lib test
 flutter test
 flutter build apk --target-platform android-arm64
 ```
+
+Translations (English, Italian, Polish) live in one table in `tool/gen_arb.py`. Edit it, then run `python3 tool/gen_arb.py` to rewrite `lib/l10n/*.arb`.
 
 ## License
 

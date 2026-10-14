@@ -126,15 +126,19 @@ final class HuaweiFreeClip2Impl extends HuaweiFreeClip2
     if (reread != null) _send(reread);
   }
 
-  /// Gesture read replies: 1 = left, 2 = right, 3 = actions the device allows
+  /// Gesture read replies: 1 = left, 2 = right, 3 = actions the device
+  /// allows. Taps and long press also carry the in-call variant: 4 = left,
+  /// 5 = right, 6 = allowed actions - pass [inCall] for those.
   static ({int? left, int? right, List<int>? options})? _gesture(
-    Map<int, List<int>> a,
-  ) {
+    Map<int, List<int>> a, {
+    bool inCall = false,
+  }) {
+    final base = inCall ? 3 : 0;
     int? one(int id) => a[id]?.length == 1 ? _s8(a[id]![0]) : null;
-    final left = one(1);
-    final right = one(2);
+    final left = one(base + 1);
+    final right = one(base + 2);
     if (left == null && right == null) return null;
-    final opts = a[3];
+    final opts = a[base + 3];
     return (
       left: left,
       right: right,
@@ -170,11 +174,15 @@ final class HuaweiFreeClip2Impl extends HuaweiFreeClip2
     } else if (cmd.isAbout(_Cmd.getDoubleTap)) {
       final g = _gesture(a);
       if (g == null) return;
+      final c = _gesture(a, inCall: true);
       _answered.add(_Cmd.getDoubleTap);
       _settingsCtrl.add(last.copyWith(
         doubleTapLeft: g.left,
         doubleTapRight: g.right,
         doubleTapOptions: g.options,
+        doubleTapInCallLeft: c?.left,
+        doubleTapInCallRight: c?.right,
+        doubleTapInCallOptions: c?.options,
       ));
     } else if (cmd.isAbout(_Cmd.getTripleTap)) {
       final g = _gesture(a);
@@ -188,17 +196,25 @@ final class HuaweiFreeClip2Impl extends HuaweiFreeClip2
     } else if (cmd.isAbout(_Cmd.getLongPress)) {
       final g = _gesture(a);
       if (g == null) return;
+      final c = _gesture(a, inCall: true);
       _answered.add(_Cmd.getLongPress);
       _settingsCtrl.add(last.copyWith(
         longPressLeft: g.left,
         longPressRight: g.right,
         longPressOptions: g.options,
+        longPressInCallLeft: c?.left,
+        longPressInCallRight: c?.right,
+        longPressInCallOptions: c?.options,
       ));
     } else if (cmd.isAbout(_Cmd.getSwipe)) {
-      final v = one(1);
-      if (v == null) return;
+      // both clips always share the swipe setting, param 1 is enough
+      final g = _gesture(a);
+      if (g?.left == null) return;
       _answered.add(_Cmd.getSwipe);
-      _settingsCtrl.add(last.copyWith(swipeVolume: _s8(v) == 0));
+      _settingsCtrl.add(last.copyWith(
+        swipeAction: g!.left,
+        swipeOptions: g.options,
+      ));
     } else if (cmd.isAbout(_Cmd.getAutoPause)) {
       final v = one(1);
       if (v == null) return;
@@ -299,6 +315,14 @@ final class HuaweiFreeClip2Impl extends HuaweiFreeClip2
     if (changed(n.doubleTapRight, p.doubleTapRight)) {
       await _write(_Cmd.doubleTap(2, n.doubleTapRight!), _Cmd.getDoubleTap);
     }
+    if (changed(n.doubleTapInCallLeft, p.doubleTapInCallLeft)) {
+      await _write(
+          _Cmd.doubleTap(4, n.doubleTapInCallLeft!), _Cmd.getDoubleTap);
+    }
+    if (changed(n.doubleTapInCallRight, p.doubleTapInCallRight)) {
+      await _write(
+          _Cmd.doubleTap(5, n.doubleTapInCallRight!), _Cmd.getDoubleTap);
+    }
     if (changed(n.tripleTapLeft, p.tripleTapLeft)) {
       await _write(_Cmd.tripleTap(1, n.tripleTapLeft!), _Cmd.getTripleTap);
     }
@@ -311,8 +335,16 @@ final class HuaweiFreeClip2Impl extends HuaweiFreeClip2
     if (changed(n.longPressRight, p.longPressRight)) {
       await _write(_Cmd.longPress(2, n.longPressRight!), _Cmd.getLongPress);
     }
-    if (changed(n.swipeVolume, p.swipeVolume)) {
-      await _write(_Cmd.swipe(n.swipeVolume!), _Cmd.getSwipe);
+    if (changed(n.longPressInCallLeft, p.longPressInCallLeft)) {
+      await _write(
+          _Cmd.longPress(4, n.longPressInCallLeft!), _Cmd.getLongPress);
+    }
+    if (changed(n.longPressInCallRight, p.longPressInCallRight)) {
+      await _write(
+          _Cmd.longPress(5, n.longPressInCallRight!), _Cmd.getLongPress);
+    }
+    if (changed(n.swipeAction, p.swipeAction)) {
+      await _write(_Cmd.swipe(n.swipeAction!), _Cmd.getSwipe);
     }
     if (changed(n.autoPause, p.autoPause)) {
       await _write(_Cmd.autoPause(n.autoPause!), _Cmd.getAutoPause);
@@ -342,6 +374,8 @@ abstract class _Cmd {
   static final getDeviceInfo =
       MbbCommand(1, 7, {for (var i = 0; i < 32; i++) i: const []});
 
+  // Gesture writes: param id = side (1 left, 2 right; 4/5 = during a call)
+
   // 0x01 0x20 / 0x01 0x1f
   static const getDoubleTap = MbbCommand(1, 32, {1: [], 2: []});
   static MbbCommand doubleTap(int side, int action) => MbbCommand(1, 31, {
@@ -360,11 +394,11 @@ abstract class _Cmd {
         side: [action & 0xFF]
       });
 
-  // 0x2b 0x1f / 0x2b 0x1e  (-1 = off, 0 = volume)
+  // 0x2b 0x1f / 0x2b 0x1e  (-1 = off, 0 = volume), same value on both params
   static const getSwipe = MbbCommand(43, 31, {1: [], 2: []});
-  static MbbCommand swipe(bool volume) => MbbCommand(43, 30, {
-        1: [volume ? 0 : 255],
-        2: [volume ? 0 : 255],
+  static MbbCommand swipe(int action) => MbbCommand(43, 30, {
+        1: [action & 0xFF],
+        2: [action & 0xFF],
       });
 
   // 0x2b 0x11 / 0x2b 0x10

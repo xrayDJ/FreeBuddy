@@ -224,6 +224,7 @@ class _TraceTile extends StatelessWidget {
         [
           e.timeLabel,
           '(${e.command.serviceId},${e.command.commandId})',
+          if (e.name != null) e.name!,
           if (e.isWriteReply) l.diagnosticsWriteReply,
         ].join(' · '),
       ),

@@ -32,10 +32,44 @@ class MbbTraceEntry {
 
   String get payloadHex => hexBytes(command.toPayload());
 
+  /// What this command is about, if we know - see [mbbCommandNames]
+  String? get name => mbbCommandNames[(command.serviceId, command.commandId)];
+
   @override
   String toString() => '$timeLabel ${outgoing ? 'TX' : 'RX'} $idLabel '
-      '(${command.serviceId},${command.commandId}) $argsLabel';
+      '(${command.serviceId},${command.commandId})'
+      '${name != null ? ' [$name]' : ''} $argsLabel';
 }
+
+/// Commands we know on FreeClip 2 (ids from OpenFreebuds + own captures).
+/// Debug-only, so plain English.
+const mbbCommandNames = <(int, int), String>{
+  (1, 7): 'device info',
+  (1, 8): 'battery',
+  (1, 39): 'battery (notify)',
+  (1, 31): 'double tap write',
+  (1, 32): 'double tap',
+  (1, 37): 'triple tap write',
+  (1, 38): 'triple tap',
+  (43, 3): 'in-ear state',
+  (43, 16): 'auto pause write',
+  (43, 17): 'auto pause',
+  (43, 22): 'long press write',
+  (43, 23): 'long press',
+  (43, 30): 'swipe write',
+  (43, 31): 'swipe',
+  (43, 46): 'dual connect write',
+  (43, 47): 'dual connect',
+  (43, 49): 'dual connect devices',
+  (43, 54): 'dual connect event',
+  (43, 73): 'equalizer write',
+  (43, 74): 'equalizer',
+  (43, 108): 'low latency',
+  (43, 162): 'sound quality write',
+  (43, 163): 'sound quality',
+  (12, 1): 'voice language write',
+  (12, 2): 'voice language',
+};
 
 String hexByte(int b) => (b & 0xFF).toRadixString(16).padLeft(2, '0');
 

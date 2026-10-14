@@ -36,11 +36,42 @@ List<Widget> freeClip2SettingsWidgets(
         read: (s) => (s.longPressLeft, s.longPressRight, s.longPressOptions),
         write: (l, r) => _S(longPressLeft: l, longPressRight: r),
       ),
-      _Toggle(
+      _Gesture(
         h,
-        (l) => (l.freeClip2Swipe, l.freeClip2SwipeDesc),
-        (s) => s.swipeVolume,
-        (v) => _S(swipeVolume: v),
+        title: (l) => l.freeClip2Swipe,
+        subtitle: (l) => l.freeClip2SwipeDesc,
+        fallback: GestureAction.swipeFallback,
+        label: _swipeLabel,
+        // one setting for both clips
+        read: (s) => (s.swipeAction, null, s.swipeOptions),
+        write: (l, _) => _S(swipeAction: l),
+        bothTitle: false,
+      ),
+      _Gesture(
+        h,
+        title: (l) => l.freeClip2DoubleTapInCall,
+        fallback: GestureAction.inCallFallback,
+        label: _inCallLabel,
+        read: (s) => (
+          s.doubleTapInCallLeft,
+          s.doubleTapInCallRight,
+          s.doubleTapInCallOptions,
+        ),
+        write: (l, r) => _S(doubleTapInCallLeft: l, doubleTapInCallRight: r),
+        hideUntilKnown: true,
+      ),
+      _Gesture(
+        h,
+        title: (l) => l.freeClip2HoldInCall,
+        fallback: GestureAction.inCallFallback,
+        label: _inCallLabel,
+        read: (s) => (
+          s.longPressInCallLeft,
+          s.longPressInCallRight,
+          s.longPressInCallOptions,
+        ),
+        write: (l, r) => _S(longPressInCallLeft: l, longPressInCallRight: r),
+        hideUntilKnown: true,
       ),
       _SectionHeader((l) => l.freeClip2SectionSound),
       _SoundQuality(h),
@@ -67,6 +98,9 @@ List<Widget> freeClip2SettingsWidgets(
     ];
 
 /// Human name of a [GestureAction] code
+///
+/// Codes nobody has identified yet show up as "Unknown action (N)" - they
+/// are still selectable, so they can be tried out on the clips.
 String gestureActionLabel(AppLocalizations l, int code) => switch (code) {
       GestureAction.off => l.pageHeadphonesSettingsDoubleTapNone,
       GestureAction.voiceAssistant => l.pageHeadphonesSettingsDoubleTapAssist,
@@ -75,6 +109,20 @@ String gestureActionLabel(AppLocalizations l, int code) => switch (code) {
       GestureAction.previous => l.pageHeadphonesSettingsDoubleTapPrevSong,
       GestureAction.volumeUp => l.freeClip2VolumeUp,
       GestureAction.volumeDown => l.freeClip2VolumeDown,
+      _ => l.gestureActionUnknown(code),
+    };
+
+/// Swipe uses its own code table: 0 is volume here, not voice assistant
+String _swipeLabel(AppLocalizations l, int code) => switch (code) {
+      GestureAction.off => l.pageHeadphonesSettingsDoubleTapNone,
+      GestureAction.swipeVolume => l.freeClip2SwipeVolume,
+      _ => l.gestureActionUnknown(code),
+    };
+
+/// In-call gestures too: 0 is answer / end call
+String _inCallLabel(AppLocalizations l, int code) => switch (code) {
+      GestureAction.off => l.pageHeadphonesSettingsDoubleTapNone,
+      GestureAction.answerCall => l.freeClip2InCallAnswer,
       _ => l.gestureActionUnknown(code),
     };
 
@@ -163,16 +211,28 @@ class _SoundQuality extends StatelessWidget {
 class _Gesture extends StatelessWidget {
   final _H h;
   final String Function(AppLocalizations) title;
+  final String Function(AppLocalizations)? subtitle;
   final List<int> fallback;
+  final String Function(AppLocalizations, int) label;
   final (int?, int?, List<int>?) Function(_S) read;
   final _S Function(int? left, int? right) write;
+
+  /// Hide entirely until the device reports this gesture (optional ones)
+  final bool hideUntilKnown;
+
+  /// Title the single card "Both clips" (false: no card title at all)
+  final bool bothTitle;
 
   const _Gesture(
     this.h, {
     required this.title,
+    this.subtitle,
     required this.fallback,
+    this.label = gestureActionLabel,
     required this.read,
     required this.write,
+    this.hideUntilKnown = false,
+    this.bothTitle = true,
   });
 
   @override
@@ -183,6 +243,8 @@ class _Gesture extends StatelessWidget {
       stream: h.settings.map(read),
       builder: (_, snap) {
         final (left, right, deviceOptions) = snap.data ?? (null, null, null);
+        final waiting = left == null && right == null;
+        if (waiting && hideUntilKnown) return const SizedBox.shrink();
         // trust the device about what it accepts; keep the current value
         // visible even if it's something we don't know
         final allowed = deviceOptions ?? fallback;
@@ -191,26 +253,26 @@ class _Gesture extends StatelessWidget {
           for (final v in {left, right})
             if (v != null && !allowed.contains(v)) v,
         ];
-        final waiting = left == null && right == null;
         final perSide = right != null;
 
-        Widget side(String sideTitle, int? value, _S Function(int) onPick) =>
+        Widget side(String? sideTitle, int? value, _S Function(int) onPick) =>
             Expanded(
               child: _Side(
                 title: sideTitle,
                 options: options,
-                label: (o) => gestureActionLabel(l, o),
+                label: (o) => label(l, o),
                 value: value,
                 onChanged: waiting ? null : (v) => h.setSettings(onPick(v)),
               ),
             );
 
+        final sub = waiting ? l.freeClip2Waiting : subtitle?.call(l);
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ListTile(
               title: Text(title(l), style: tt.titleMedium),
-              subtitle: waiting ? Text(l.freeClip2Waiting) : null,
+              subtitle: sub != null ? Text(sub) : null,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -224,7 +286,8 @@ class _Gesture extends StatelessWidget {
                             (v) => write(null, v)),
                       ]
                     : [
-                        side(l.freeClip2BothBuds, left, (v) => write(v, null)),
+                        side(bothTitle ? l.freeClip2BothBuds : null, left,
+                            (v) => write(v, null)),
                       ],
               ),
             ),
@@ -236,7 +299,7 @@ class _Gesture extends StatelessWidget {
 }
 
 class _Side extends StatelessWidget {
-  final String title;
+  final String? title;
   final List<int> options;
   final String Function(int) label;
   final int? value;
@@ -257,11 +320,14 @@ class _Side extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 14, 0, 6),
-            child: Text(title, style: tt.titleMedium),
-          ),
-          const Divider(indent: 32, endIndent: 32),
+          if (title != null) ...[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 14, 0, 6),
+              child: Text(title!, style: tt.titleMedium),
+            ),
+            const Divider(indent: 32, endIndent: 32),
+          ] else
+            const SizedBox(height: 4),
           for (final o in options)
             ListTileRadio<int>(
               dense: true,
