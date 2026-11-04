@@ -11,7 +11,7 @@ import 'headphones_image.dart';
 
 /// Main whole-screen widget with controls for headphones
 ///
-/// It contains battery, button to settings etc - just give it
+/// It contains battery, buttons to find a clip and to settings etc - just give it
 /// the [headphones] and all done ☺
 ///
 /// ...in fact, it is built so simple that you can freely hot-swap the
@@ -49,11 +49,9 @@ class HeadphonesControlsWidget extends StatelessWidget {
                 else
                   // TODO: This is ugly. Very
                   const Expanded(child: Icon(Icons.headphones, size: 64)),
-                if (headphones is HeadphonesSettings)
-                  const Align(
-                    alignment: Alignment.centerRight,
-                    child: _HeadphonesSettingsButton(),
-                  ),
+                _ActionButtons(
+                  showSettings: headphones is HeadphonesSettings,
+                ),
                 if (headphones is LRCBattery)
                   BatteryCard(headphones as LRCBattery),
               ],
@@ -84,11 +82,9 @@ class HeadphonesControlsWidget extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        if (headphones is HeadphonesSettings)
-                          const Align(
-                            alignment: Alignment.centerRight,
-                            child: _HeadphonesSettingsButton(),
-                          ),
+                        _ActionButtons(
+                          showSettings: headphones is HeadphonesSettings,
+                        ),
                         if (headphones is LRCBattery)
                           BatteryCard(headphones as LRCBattery),
                       ],
@@ -101,27 +97,65 @@ class HeadphonesControlsWidget extends StatelessWidget {
   }
 }
 
-/// Simple button leading to headphones settings page
-class _HeadphonesSettingsButton extends StatelessWidget {
-  const _HeadphonesSettingsButton();
+/// "Find" and "Settings" buttons above the battery card
+class _ActionButtons extends StatelessWidget {
+  final bool showSettings;
+
+  const _ActionButtons({required this.showSettings});
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Wrap(
+        alignment: WrapAlignment.end,
+        children: [
+          _RouteButton(
+            icon: Icons.travel_explore,
+            label: l.findClipHomeButton,
+            route: '/find_clip',
+          ),
+          if (showSettings)
+            _RouteButton(
+              icon: Icons.settings_outlined,
+              label: l.settings,
+              route: '/headphones_settings',
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Small outlined button that opens [route]
+class _RouteButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String route;
+
+  const _RouteButton({
+    required this.icon,
+    required this.label,
+    required this.route,
+  });
 
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context);
-    final l = AppLocalizations.of(context)!;
     return Padding(
       // TODO: Move this to theme stuff some day
       padding: t.cardTheme.margin ?? const EdgeInsets.all(4.0),
       child: OutlinedButton(
-        onPressed: () => Navigator.pushNamed(context, '/headphones_settings'),
+        onPressed: () => Navigator.pushNamed(context, route),
         child: Padding(
           padding: const EdgeInsets.all(2.0),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.settings_outlined, size: 20),
+              Icon(icon, size: 20),
               const SizedBox(width: 4),
-              Text(l.settings),
+              Text(label),
             ],
           ),
         ),
