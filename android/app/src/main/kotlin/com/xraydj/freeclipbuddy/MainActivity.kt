@@ -2,10 +2,12 @@ package com.xraydj.freeclipbuddy
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
     private var findClipTone: FindClipTone? = null
+    private var clipScanner: ClipScanner? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -29,11 +31,25 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+
+        // See lib/platform_stuff/android/clip_scanner.dart
+        val scanner = ClipScanner(applicationContext)
+        clipScanner = scanner
+        EventChannel(flutterEngine.dartExecutor.binaryMessenger, "freeclipbuddy/scan")
+            .setStreamHandler(scanner)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "freeclipbuddy/scan_info")
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "bondedClipAddresses" -> result.success(scanner.bondedClipAddresses())
+                    else -> result.notImplemented()
+                }
+            }
     }
 
     override fun onDestroy() {
         // never leave the phone beeping at max volume
         findClipTone?.stop()
+        clipScanner?.stop()
         super.onDestroy()
     }
 }

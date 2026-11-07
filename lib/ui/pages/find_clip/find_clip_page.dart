@@ -12,19 +12,47 @@ import '../../../headphones/huawei/settings.dart';
 import '../../../platform_stuff/android/find_clip.dart';
 import '../../common/headphones_connection_ensuring_overlay.dart';
 import '../home/controls/battery_card.dart';
+import 'clip_scanner_view.dart';
 
-/// Make the connected clip beep loudly, to find it
+/// Find a clip: make the connected one beep, or search nearby for one that
+/// isn't connected anymore by its own Bluetooth signal
 class FindClipPage extends StatelessWidget {
-  const FindClipPage({super.key});
+  /// Route argument that opens the "search nearby" tab
+  static const scanTab = 'scan';
+
+  final Widget scanner;
+
+  const FindClipPage({super.key, this.scanner = const ClipScannerView()});
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    return Scaffold(
-      appBar: AppBar(title: Text(l.findClipTitle)),
-      body: Center(
-        child: HeadphonesConnectionEnsuringOverlay(
-          builder: (_, h) => _FindClipBody(h),
+    final connected = context.read<HeadphonesConnectionCubit>().state
+        is HeadphonesConnectedOpen;
+    final askedScan = ModalRoute.of(context)?.settings.arguments == scanTab;
+    return DefaultTabController(
+      length: 2,
+      // a disconnected clip can't ring - go straight to the scanner
+      initialIndex: askedScan || !connected ? 1 : 0,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(l.findClipTitle),
+          bottom: TabBar(
+            tabs: [
+              Tab(icon: const Icon(Icons.volume_up), text: l.findClipTabRing),
+              Tab(icon: const Icon(Icons.radar), text: l.findClipTabScan),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            Center(
+              child: HeadphonesConnectionEnsuringOverlay(
+                builder: (_, h) => _FindClipBody(h),
+              ),
+            ),
+            scanner,
+          ],
         ),
       ),
     );

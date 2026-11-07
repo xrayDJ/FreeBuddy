@@ -11,6 +11,13 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <!-- Needed only if your app communicates with already-paired Bluetooth devices. -->
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <!-- Find a disconnected clip by its Bluetooth LE signal (ClipScanner.kt).
+         No neverForLocation flag: with it Android hides some beacons, and we
+         don't know yet what the clips advertise. Location is never stored. -->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
 
     <application

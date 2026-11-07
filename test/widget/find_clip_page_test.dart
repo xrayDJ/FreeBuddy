@@ -47,9 +47,13 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         locale: Locale('en'),
-        home: FindClipPage(),
+        // the real scanner needs the platform; tested on its own
+        home: FindClipPage(scanner: SizedBox()),
       ),
     ));
+    await tester.pumpAndSettle();
+    // opened while still "connecting": the page starts on the scanner tab
+    await tester.tap(find.text('Ring'));
     await tester.pumpAndSettle();
     return cubit;
   }

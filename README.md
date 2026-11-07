@@ -9,6 +9,7 @@ It is a personal fork of [FreeBuddy](https://github.com/TheLastGimbus/FreeBuddy)
 - Battery of left clip, right clip and case, plus a home screen widget
 - Double tap, triple tap and touch-and-hold actions per clip, plus double tap and hold during calls
 - Swipe action, auto pause, dual connection, low latency, sound quality preference
+- Find a clip: make the connected clip beep loudly, or search nearby for a disconnected one by its own Bluetooth LE signal (hot/cold meter, raw signals listed)
 - Diagnostics page (Settings → Diagnostics): raw Bluetooth traffic, device info and a manual command sender, to figure out what the clips really accept
 - English, Italian and Polish
 

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../cubit/headphones_connection_cubit.dart';
+import '../find_clip/find_clip_page.dart';
 
 class DisconnectedInfoWidget extends StatelessWidget {
   const DisconnectedInfoWidget({super.key});
@@ -37,6 +38,19 @@ class DisconnectedInfoWidget extends StatelessWidget {
             ),
           ),
         ),
+        // a lost clip is a disconnected clip: offer the nearby search here
+        if (ModalRoute.of(context)?.settings.name != '/find_clip') ...[
+          const SizedBox(height: 8),
+          TextButton.icon(
+            icon: const Icon(Icons.radar),
+            label: Text(l.findClipTabScan),
+            onPressed: () => Navigator.pushNamed(
+              context,
+              '/find_clip',
+              arguments: FindClipPage.scanTab,
+            ),
+          ),
+        ],
       ],
     );
   }
